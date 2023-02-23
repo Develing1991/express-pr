@@ -52,3 +52,6 @@
 ## Postman API
 
 ![스크린샷 2023-02-24 오전 3 45 15](https://user-images.githubusercontent.com/54789601/221001535-f40f3e2c-994f-4f0b-bd05-589359fcd9ff.png)
+
+### etc..
+FrontEnd는 Postman이나 Swagger로 대체함.
