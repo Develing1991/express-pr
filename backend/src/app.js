@@ -1,25 +1,33 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc'
 
 import mongodbLoader from './loaders/mongodbLoader.js';
 import { createUser, getUsers, sendEmail, userOGProfile } from './services/userService.js';
 import { createTokenUser, tockenCheck, updateTokenAuth } from './services/tokenService.js';
 import { getStarbucks } from './services/starbucksService.js';
+import { swaggerOptions } from './swagger/option.js';
 
 dotenv.config();
 
 const app = express();
 const port = 3000;
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 app.use(cors({
     origin: 'http://127.0.0.1:5500'
 }))
 app.use(express.json())
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+app.get('/users', async (req, res)=>{
+    const users = await getUsers();
+    res.send(users);
+})
 
-app.post('/user', async (req, res)=>{
+app.post('/users', async (req, res)=>{
     const user = req.body;
     const {prefer, phone, email} = user;
     
@@ -38,10 +46,7 @@ app.post('/user', async (req, res)=>{
     res.send(_id);
 })
 
-app.get('/users', async (req, res)=>{
-    const users = await getUsers();
-    res.send(users);
-})
+
 
 // token
 app.post('/tokens/phone', async (req, res)=>{
