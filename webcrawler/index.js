@@ -15,18 +15,33 @@ await mongoose.connect('mongodb://localhost:27017/devlee');
 
     const content = await page.content();
     const $ = cheerio.load(content);
-    const liEls = $('#container > div.content > div.product_result_wrap.product_result_wrap01 > div > dl > dd:nth-child(2) > div.product_list > dl > dd:nth-child(2) > ul > li');
-    
-    liEls.each(async (_, liEl) => {
-        const img = $(liEl).find('> dl > dt > a > img').attr('src');
-        const name = $(liEl).find('> dl > dd').text();
+    const ddEls = $('#container > div.content > div.product_result_wrap.product_result_wrap01 > div > dl > dd:nth-child(2) > div.product_list > dl > dd');
+    ddEls.each((_, ddEl)=>{
+        const liEls = $(ddEl).find('> ul > li');
         
-        const starBucks = new StarBucks({
-            img,
-            name
+        liEls.each(async (_, liEl) => {
+            const img = $(liEl).find('> dl > dt > a > img').attr('src');
+            const name = $(liEl).find('> dl > dd').text();
+            
+            const starBucks = new StarBucks({
+                img,
+                name
+            })
+            await starBucks.save();
         })
-        await starBucks.save();
     })
+
+    // const liEls = $('#container > div.content > div.product_result_wrap.product_result_wrap01 > div > dl > dd:nth-child(2) > div.product_list > dl > dd:nth-child(2) > ul > li');
+    // liEls.each(async (_, liEl) => {
+    //     const img = $(liEl).find('> dl > dt > a > img').attr('src');
+    //     const name = $(liEl).find('> dl > dd').text();
+        
+    //     const starBucks = new StarBucks({
+    //         img,
+    //         name
+    //     })
+    //     await starBucks.save();
+    // })
    
     await browser.close();                                   
 })
